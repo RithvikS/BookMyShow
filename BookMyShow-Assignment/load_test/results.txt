@@ -1,0 +1,58 @@
+[PASS] S1 Hot-seat stampede (pessimistic)
+        setup: 500 users, same 2 seats (C5,C6), released together
+        outcomes: {'SEATS_UNAVAILABLE': 499, 'HELD': 1}
+        double_owned_seats: 0
+        lost_holds: 0
+        throughput_rps: 221.0
+        p50_ms: 30.3
+        p95_ms: 46.4
+        p99_ms: 57.6
+        max_ms: 66.5
+        deadlocks_or_lock_timeouts: 0
+[PASS] S2 Sold-out rush
+        setup: 500 users, random 1-4 seat blocks, 80-seat show
+        outcomes: {'SEATS_UNAVAILABLE': 452, 'HELD': 48}
+        seats_sold: 76
+        show_seat_rows_owned: 76
+        capacity: 80
+        double_owned_seats: 0
+        lost_holds: 0
+        throughput_rps: 178.9
+        p50_ms: 36.9
+        p95_ms: 68.4
+        p99_ms: 79.2
+        max_ms: 101.4
+        deadlocks_or_lock_timeouts: 0
+[PASS] S3 Webhook storm (idempotency)
+        setup: 50 paid bookings, each webhook delivered 5x concurrently (250 calls)
+        outcomes: {'DUPLICATE_EVENT': 200, 'BOOKING_CONFIRMED': 50}
+        bookings_confirmed: 50
+        payments_captured: 50
+        webhook_rows_stored: 50
+        throughput_rps: 87.3
+        p50_ms: 31.7
+        p95_ms: 65.0
+        p99_ms: 74.2
+        max_ms: 82.8
+        deadlocks_or_lock_timeouts: 0
+[PASS] S4 Expiry race (lapsed hold vs new buyer vs late payment)
+        setup: 30 seats held for 2 s, then new buyers + late payments fired together
+        outcomes: {'pay:LATE_PAYMENT_REFUND': 13, 'pay:BOOKING_CONFIRMED': 17, 'buy:SEATS_UNAVAILABLE': 17, 'buy:HELD': 13}
+        seats_without_exactly_one_owner: 0
+        double_owned_seats: 0
+        lost_holds: 0
+        deadlocks_or_lock_timeouts: 0
+[PASS] S5 Hot-seat stampede (optimistic CAS, for comparison)
+        setup: 500 users, same 2 seats, version compare-and-set
+        outcomes: {'CONFLICT_ROLLED_BACK': 499, 'HELD': 1}
+        wasted_transactions: 499
+        double_owned_seats: 0
+        lost_holds: 0
+        throughput_rps: 145.6
+        p50_ms: 110.2
+        p95_ms: 124.2
+        p99_ms: 144.0
+        max_ms: 153.3
+        deadlocks_or_lock_timeouts: 0
+
+ALL PASSED
